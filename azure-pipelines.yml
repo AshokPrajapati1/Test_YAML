@@ -1,0 +1,33 @@
+name: First_GithubPipeline
+
+pool: Default
+
+trigger: 
+ branches:
+  include: 
+   - feature
+  exclude:
+   - Env/Dev
+steps:
+- task: TerraformTaskV4@4
+  inputs:
+    provider: 'azurerm'
+    command: 'init'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/Env/Dev'
+    backendServiceArm: 'Ashok2'
+    backendAzureRmResourceGroupName: 'rg-devops'
+    backendAzureRmStorageAccountName: 'storageaccountdevops'
+    backendAzureRmContainerName: 'container-devops'
+    backendAzureRmKey: 'Dev.terraform.tfstate'
+- task: TerraformTaskV4@4
+  inputs:
+    provider: 'azurerm'
+    command: 'plan'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/Env/Dev'
+    environmentServiceNameAzureRM: 'Ashok2'
+- task: TerraformTaskV4@4
+  inputs:
+    provider: 'azurerm'
+    command: 'apply'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/Env/Dev'
+    environmentServiceNameAzureRM: 'Ashok2'
